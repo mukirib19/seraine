@@ -177,28 +177,34 @@ start_date date, end_date date, active boolean default true
 ## 7. What Is Built (as of Session 3 — June 2026)
 
 - ✅ Full brand system: colors, typography, dark mode, CSS variables
-- ✅ Navbar: logo, links, dark mode toggle, cart count (getItemCount), mobile hamburger
+- ✅ Navbar: logo, links, dark mode toggle, cart count (getItemCount), mobile hamburger with spinners, hydration-safe badge
 - ✅ Footer: business details, exact social links, logo
-- ✅ Login: Google OAuth, password toggle, router.replace() redirect, role-based routing
-- ✅ Signup: Google OAuth, phone saved to profile, auto-login after signup (no email gate), 2-step
+- ✅ Login: Google OAuth, password toggle, `window.location.href` redirect, role-based routing (FIXED)
+- ✅ Signup: Google OAuth, phone saved to profile, auto-signs-in after account creation (no email gate), 2-step
 - ✅ Hero: large logo, dark bg, purple CTA, blue secondary
 - ✅ FeaturedProducts: Supabase, 6 max, next/image, empty state, View All
 - ✅ Contact: real details, form → quotations table
 - ✅ About: logo, brand colors, real contact
 - ✅ Services: 9 categories, static (no DB), brand CSS vars
-- ✅ Portfolio: masonry grid, category filter tabs, lightbox, CTA
+- ✅ Portfolio: masonry columns layout, category filter tabs, lightbox, CTA, empty state
 - ✅ Reviews: static 5-star testimonials carousel (no DB dependency)
 - ✅ Availability banner: static hours + contact info
-- ✅ Admin `/admin`: products + banners full CRUD, image upload to Supabase storage
+- ✅ Admin `/admin`: products + banners full CRUD, image upload to Supabase storage, video_url field, 4s timeout fallback
 - ✅ Profile `/profile`: edit details, dark mode toggle, favourites, delete account
 - ✅ Cart: Zustand store, localStorage + Supabase sync on login
 - ✅ WhatsApp button + ScrollToTop on all public pages
-- ✅ Track page: fixed icon/label spacing
+- ✅ Track page: fixed icon/label spacing (flex gap)
 - ✅ `/products` → redirects to `/catalog`
 - ✅ `/catalog`: uses `in_stock`, brand vars, next/image
 - ✅ `/catalog/[id]`: product detail with add to cart + Supabase sync
 - ✅ Supabase schema: 6 tables + RLS + trigger + storage bucket in `schema-and-seed.sql`
-- ✅ Seed: 7 products + 3 banners with working Unsplash URLs
+- ✅ Seed: 7 products + 3 banners using LOCAL images at `/assets/products/*.jpg`
+- ✅ Local product images: `public/assets/products/` (banner, notebook, wedding, tshirt, mug, bouquet, decor)
+- ✅ 404 page: brand colors, logo, two CTAs, phone number
+- ✅ Netlify config: `netlify.toml` with `@netlify/plugin-nextjs` for SSR
+- ✅ GitHub: pushed to https://github.com/mukirib19/seraine
+- ✅ Auth provider: mounted flag, try/catch, no crashes on missing tables
+- ✅ Hydration error: fixed (mounted check before rendering cart badge)
 - ✅ Build: 28 routes, 0 errors
 
 ---
@@ -206,19 +212,31 @@ start_date date, end_date date, active boolean default true
 ## 8. Known Issues / Next Steps
 
 ### Remaining
-1. **Google OAuth** — requires Google Cloud Console setup (see Section 11)
-2. **Admin video upload** — admin page needs optional `video_url` field for products
-3. **`<img>` tags in admin/profile** — replace with `next/image` to fix ESLint warnings
-4. **Supabase email confirmation** — disable in Supabase Dashboard → Auth → Settings → "Enable email confirmations" = OFF for instant login after signup
+1. **Google OAuth** — Add redirect URI `https://kuiguvaurlhfuwcsyeni.supabase.co/auth/v1/callback` in Google Cloud Console, then add Client ID + Secret in Supabase Dashboard → Auth → Providers → Google
+2. **`<img>` tags in admin/profile** — replace with `next/image` to fix ESLint warnings (non-blocking)
+3. **Supabase email confirmation** — disable in Dashboard → Auth → Settings → "Enable email confirmations" = OFF
+
+### Netlify Deployment
+1. Connect GitHub repo `mukirib19/seraine` in Netlify
+2. Set env vars in Netlify: `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Add production domain to Supabase Auth → Redirect URLs
+4. Update Supabase Site URL to production domain
+
+### Google OAuth (for production)
+Add these redirect URIs in Google Cloud Console:
+- `https://kuiguvaurlhfuwcsyeni.supabase.co/auth/v1/callback` ← Required
+- `http://localhost:3000` ← For local dev (already added)
+
+### Make yourself admin (run in Supabase SQL Editor)
+```sql
+UPDATE profiles SET role = 'admin' WHERE email = 'seraine.creation@gmail.com';
+```
 
 ### Supabase Auth Settings (do once)
 - Dashboard → Authentication → Settings
-- **Disable email confirmations** = ON (so users log in immediately)
+- **Disable email confirmations** = OFF
 - **Site URL** = `http://localhost:3000` (dev) or your production domain
 - **Redirect URLs** = add `http://localhost:3000/**`
-
-### Google OAuth Setup (Section 11)
-See Section 11 below for step-by-step Google Cloud Console setup.
 
 ---
 
