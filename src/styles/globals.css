@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   SERAINE CREATIONS — Design System
+   ============================================================ */
+
+:root {
+  --dark: #1C1C1C;
+  --light: #F5F5F5;
+  --primary: #2563C4;
+  --primary-hover: #1d4fa3;
+  --cta: #A020C8;
+  --cta-hover: #8a1aab;
+  --promo: #F5A800;
+  --success: #5BBD2F;
+  --danger: #E8231A;
+  --muted: #6B6B6B;
+  --border: rgba(37,99,196,0.2);
+  --bg: #F5F5F5;
+  --text: #1C1C1C;
+  --card-bg: #FFFFFF;
+}
+
+.dark {
+  --bg: #1C1C1C;
+  --text: #F5F5F5;
+  --card-bg: #2A2A2A;
+  --muted: #A0A0A0;
+  --border: rgba(37,99,196,0.3);
+}
+
+@layer base {
+  * { min-width: 0; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-body;
+    background-color: var(--bg);
+    color: var(--text);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4 { @apply font-heading font-bold; }
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl tracking-tight leading-tight; }
+  h2 { @apply text-3xl md:text-4xl tracking-tight; }
+  h3 { @apply text-2xl md:text-3xl font-semibold; }
+  h4 { @apply text-xl md:text-2xl font-semibold; }
+  p { @apply text-base leading-relaxed; }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+    ring-offset-color: var(--bg);
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { @apply rounded-full; background: var(--border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+}
+
+@layer components {
+  /* Card hover lift */
+  .card-hover {
+    @apply transition-all duration-200 ease-out;
+    border-radius: 12px;
+    border: 0.5px solid rgba(37,99,196,0.2);
+    background: var(--card-bg);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Link underline slide-in */
+  .link-underline { @apply relative; }
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1.5px] bg-primary transition-all duration-300 ease-out;
+  }
+  .link-underline:hover::after { @apply w-full; }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    @apply bg-[length:200%_100%] animate-shimmer rounded;
+    background: linear-gradient(90deg, var(--border) 25%, var(--card-bg) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+  }
+
+  /* Blob background */
+  .blob {
+    @apply absolute rounded-full mix-blend-multiply filter blur-[60px] opacity-15;
+    animation: blob 7s infinite;
+  }
+  .blob-primary { background: var(--primary); }
+  .blob-cta { background: var(--cta); }
+  /* Legacy aliases */
+  .blob-burgundy { background: var(--primary); }
+  .blob-gold { background: var(--promo); }
+
+  .badge { @apply inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full; }
+
+  .marquee-container { @apply overflow-hidden whitespace-nowrap; }
+  .marquee-content { @apply inline-flex animate-marquee; }
+
+  .progress-bar { @apply fixed top-0 left-0 h-1 bg-primary z-[9999] transition-all duration-300 ease-out; }
+
+  /* Section spacing */
+  .section-padding { @apply py-20 md:py-24; }
+
+  /* Pill button base */
+  .btn-pill { border-radius: 999px; }
+
+  /* Spinner */
+  .spinner {
+    @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+  }
+
+  /* Fade in animation for hero sections */
+  .fade-in-up { @apply animate-fade-in-up; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-id { @apply font-mono text-sm tracking-wider; }
+  .touch-target { @apply min-h-[44px] min-w-[44px]; }
+  .container-narrow { @apply max-w-3xl mx-auto px-4 sm:px-6; }
+  .container-default { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .container-wide { @apply max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8; }
+  .truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .truncate-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}
