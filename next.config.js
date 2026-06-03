@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // unoptimized: true ensures images always render correctly on Netlify
+    // and avoids "/_next/image" 404s in SSR/static environments
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -12,8 +15,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.ftcdn.net',
+      },
     ],
-    unoptimized: false,
   },
 }
 

@@ -17,26 +17,32 @@ import { Plus, Pencil, Trash2, Upload, Package, Image as ImageIcon, CalendarDays
 // ADMIN PAGE — Products + Banners management
 // ============================================================
 export default function AdminPage() {
-  const { user, role, isLoading } = useAuthStore()
+  const { user, role, isLoading, setLoading } = useAuthStore()
   const router = useRouter()
   const [timedOut, setTimedOut] = useState(false)
 
   useEffect(() => {
-    // Fallback: if still loading after 4s, force a check
-    const t = setTimeout(() => setTimedOut(true), 4000)
+    const t = setTimeout(() => setTimedOut(true), 5000)
     return () => clearTimeout(t)
   }, [])
 
   useEffect(() => {
-    if (!isLoading && !user) { router.push('/login'); return }
-    if (!isLoading && user && role && role !== 'admin') { router.push('/'); return }
-    if (timedOut && !user) { router.push('/login') }
-  }, [user, role, isLoading, timedOut, router])
+    if (isLoading) return // Wait for auth to finish loading
+    if (!user) { router.push('/login'); return }
+    if (user && role !== null && role !== 'admin') { router.push('/'); return }
+  }, [user, role, isLoading, router])
 
-  if ((isLoading && !timedOut) || (!isLoading && !user) || (!isLoading && role && role !== 'admin')) {
+  useEffect(() => {
+    if (timedOut && isLoading) { setLoading(false) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timedOut, isLoading])
+
+  // Still loading auth state
+  if (isLoading && !timedOut) {
     return <div className="min-h-screen flex items-center justify-center"><span className="spinner w-8 h-8" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }} /></div>
   }
-  if (!user || role !== 'admin') return null
+  // Not logged in or not admin
+  if (!user || (role !== null && role !== 'admin')) return null
 
   return (
     <>

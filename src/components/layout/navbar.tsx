@@ -48,9 +48,10 @@ export function Navbar() {
     router.push(href)
   }
 
-  const dashboardHref = isAuthenticated
-    ? role === 'admin' ? '/admin' : '/dashboard/customer'
-    : '/login'
+  // Always link profile icon to /profile — that page handles the auth redirect.
+  // This prevents the navbar from wrongly sending logged-in users to /login
+  // before the Zustand auth store has hydrated from Supabase.
+  const profileHref = '/profile'
 
   return (
     <header className={cn(
@@ -61,7 +62,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-[72px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-[1.03]">
-            <Image src="/assets/logo.png" alt="Seraine Creations" width={40} height={40} className="w-10 h-10 object-contain" />
+            <Image src="/assets/logo.png" alt="Seraine Creations" width={40} height={40} className="w-10 h-10 object-contain" priority unoptimized />
             <span className="font-heading text-xl font-bold hidden sm:block" style={{ color: 'var(--text)' }}>Seraine Creations</span>
           </Link>
 
@@ -98,8 +99,8 @@ export function Navbar() {
               )}
             </Link>
 
-            {/* Profile / Login */}
-            <Link href={isAuthenticated ? '/profile' : dashboardHref} className="w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-primary/10" aria-label="Account">
+            {/* Profile icon — always goes to /profile, which redirects to /login if not authenticated */}
+            <Link href={profileHref} className="w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-primary/10" aria-label="Account">
               <User className="w-5 h-5" style={{ color: 'var(--text)' }} />
             </Link>
 
@@ -133,9 +134,9 @@ export function Navbar() {
                 )
               })}
               <div className="pt-3 border-t mt-3" style={{ borderColor: 'var(--border)' }}>
-                <button onClick={() => handleNavClick(dashboardHref)} className="w-full text-left flex items-center gap-3 px-4 py-3 text-base font-medium" style={{ color: 'var(--primary)' }}>
-                  {navLoading === dashboardHref && <span className="spinner w-4 h-4" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }} />}
-                  {isAuthenticated ? 'Dashboard' : 'Login'}
+                <button onClick={() => handleNavClick(profileHref)} className="w-full text-left flex items-center gap-3 px-4 py-3 text-base font-medium" style={{ color: 'var(--primary)' }}>
+                  {navLoading === profileHref && <span className="spinner w-4 h-4" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }} />}
+                  {mounted && isAuthenticated ? 'My Account' : 'Login / Sign Up'}
                 </button>
               </div>
             </div>
